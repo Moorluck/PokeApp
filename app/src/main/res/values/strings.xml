@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">PokeApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="btn_search_a_pokemon">Search a Pokemon</string>
+    <string name="stat_hp">- HP</string>
+    <string name="stat_attack">- Att</string>
+    <string name="stat_def">- Def</string>
+    <string name="stat_att_spe">- Att Spe</string>
+    <string name="stat_def_spe">- Def Spe</string>
+    <string name="stat_speed">- Speed</string>
+    <string name="btn_main_search_a_pokemon">Search a Pokemon</string>
+    <string name="btn_main_favorites_pokemon">Favorites pokemon</string>
+    <string name="btn_main_my_pokemon_team">My pokemon team</string>
+    <string name="detail_stats_title">Stats</string>
+    <string name="detail_type_title">Type</string>
+</resources>
