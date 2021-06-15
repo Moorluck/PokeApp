@@ -1,5 +1,6 @@
 package be.bxl.pokeapp.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -29,6 +30,7 @@ public class ListOfPokemonFragment extends Fragment {
 
     private boolean isTeamList;
     private ArrayList<Pokemon> pokemons;
+    ArrayList<String> pokemonNames;
 
 
     public ListOfPokemonFragment() {
@@ -36,17 +38,9 @@ public class ListOfPokemonFragment extends Fragment {
     }
 
     public static ListOfPokemonFragment newInstance() {
-        ListOfPokemonFragment fragment = new ListOfPokemonFragment();
-        return fragment;
+        return new ListOfPokemonFragment();
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -57,34 +51,26 @@ public class ListOfPokemonFragment extends Fragment {
         lvPokemon = v.findViewById(R.id.list_view_list_fragment_poke_list);
         tvTitle = v.findViewById(R.id.tv_list_fragment_title);
 
-        ArrayList<String> pokemonNames = new ArrayList<>();
-
-        for (Pokemon pokemon : pokemons) {
-            pokemonNames.add(pokemon.getName().substring(0, 1).toUpperCase()
-                    + pokemon.getName().substring(1));
-        }
-
-
-        lvPokemon.setAdapter(new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                pokemonNames));
-
         lvPokemon.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 onItemClickListener.onItemClick(pokemons.get(position).getId());
             }
+
         });
 
         if (isTeamList) {
-            tvTitle.setText("My Team");
+            tvTitle.setText(R.string.title_list_team);
         }
         else {
-            tvTitle.setText("My Favorites");
+            tvTitle.setText(R.string.title_list_fav);
         }
 
         return v;
+    }
+
+    public void updatePokemonList(ArrayList<Pokemon> pokemons) {
+        this.pokemons = pokemons;
     }
 
     public void updateListStatus(boolean isTeamList) {
@@ -95,8 +81,24 @@ public class ListOfPokemonFragment extends Fragment {
         return isTeamList;
     }
 
-    public void updatePokemonList(ArrayList<Pokemon> pokemons) {
-        this.pokemons = pokemons;
+    @Override
+    public void onResume() {
+        updatePokemonNames();
+        super.onResume();
+    }
+
+    private void updatePokemonNames() {
+        pokemonNames = new ArrayList<>();
+
+        for (Pokemon pokemon : pokemons) {
+            pokemonNames.add(pokemon.getName().substring(0, 1).toUpperCase()
+                    + pokemon.getName().substring(1));
+        }
+
+        lvPokemon.setAdapter(new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1,
+                pokemonNames));
     }
 
     public interface OnItemClickListener {

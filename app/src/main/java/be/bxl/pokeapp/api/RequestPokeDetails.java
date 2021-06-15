@@ -88,8 +88,7 @@ public class RequestPokeDetails extends AsyncTask<String, Void, Pokemon> {
 
     private Pokemon parsePokemonResult(String requestResult) {
 
-        Pokemon pokemon = new Pokemon(0, "MissingNO", new ArrayList<>(),
-                0, 0, 0, 0, 0, 0, "");
+        Pokemon pokemon = null;
 
         try {
             JSONObject json = new JSONObject(requestResult);

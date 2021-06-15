@@ -14,4 +14,6 @@
     <string name="btn_main_my_pokemon_team">My pokemon team</string>
     <string name="detail_stats_title">Stats</string>
     <string name="detail_type_title">Type</string>
+    <string name="title_list_team">My Team</string>
+    <string name="title_list_fav">My Favorites</string>
 </resources>

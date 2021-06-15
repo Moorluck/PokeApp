@@ -128,10 +128,16 @@ public class PokeDetailFragment extends Fragment {
         return v;
     }
 
+    // Public functions to update data
+
     public void updatePokemon(@NonNull Pokemon pokemon) {
 
         this.pokemon = pokemon;
 
+    }
+
+    public void updateFavBoolean(boolean fav) {
+        this.isFav = fav;
     }
 
     public void updateBooleanForDisplay(boolean isBtnTeamDisplayed, boolean isImgDiplayed, boolean isSearchBarDisplayed) {
@@ -142,7 +148,9 @@ public class PokeDetailFragment extends Fragment {
 
     }
 
-    public void updateDisplay() {
+    // private function to update display and fav button state
+
+    private void updateDisplay() {
 
         if (!isSearchBarDisplayed) {
             layoutSearch.setVisibility(View.GONE);
@@ -213,15 +221,7 @@ public class PokeDetailFragment extends Fragment {
         }
     }
 
-    // Transform stat in progress bar
-
-    public int convertToProgress(int stat) {
-        return (int) ((double) (stat) * (double) 100/252);
-    }
-
-    // Update fav button
-
-    private void updateFavButton() {
+    public void updateFavButton() {
         if (isFav) {
             btnFavorite.setImageResource(R.drawable.ic_baseline_favorite_24);
         }
@@ -230,10 +230,12 @@ public class PokeDetailFragment extends Fragment {
         }
     }
 
-    public void updateFavBoolean(boolean fav) {
-        this.isFav = fav;
-        updateFavButton();
+    // Transform stat in progress bar
+
+    public int convertToProgress(int stat) {
+        return (int) ((double) (stat) * (double) 100/252);
     }
+
 
     //Event Search Button
     public interface OnSearchButtonClickListener {

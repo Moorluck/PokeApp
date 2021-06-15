@@ -6,10 +6,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 
 import be.bxl.pokeapp.api.RequestPokeDetails;
 import be.bxl.pokeapp.db.PokemonDAO;
@@ -72,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             RequestPokeDetails requestPokeDetails = new RequestPokeDetails();
             requestPokeDetails.setPokemonListener(pokemonResult -> {
 
-                if (pokemonResult.getId() != 0) {
+                if (pokemonResult != null) {
                     pokeDetailFragment.updatePokemon(pokemonResult);
                     pokeDetailFragment.updateFavBoolean(db.openReadable().isFav(pokemonResult.getId()));
                     pokeDetailFragment.updateBooleanForDisplay(true, false, true);
@@ -87,48 +84,62 @@ public class MainActivity extends AppCompatActivity {
 
 
             });
+
             requestPokeDetails.execute(searchText);
         });
 
         // Button accessing DB
 
         pokeDetailFragment.setOnFavButtonClickListener(pokemonFav -> {
-            if (db.openReadable().getPokemonByID(pokemonFav.getId()) == null || !db.openReadable().isFav(pokemonFav.getId())) {
+            db.openWritable();
+
+            if (db.getPokemonByID(pokemonFav.getId()) == null || !db.isFav(pokemonFav.getId())) {
                 db.openWritable().insert(pokemonFav, false);
                 pokeDetailFragment.updateFavBoolean(true);
+                pokeDetailFragment.updateFavButton();
+                updatePokemonListFragment();
+
                 Toast.makeText(this, "Pokemon ajouté !", Toast.LENGTH_SHORT).show();
-                db.close();
             }
             else {
                 db.openWritable().delete(pokemonFav.getId(), false);
                 pokeDetailFragment.updateFavBoolean(false);
+                pokeDetailFragment.updateFavButton();
+                updatePokemonListFragment();
+
                 Toast.makeText(this, "Pokemon supprimé !", Toast.LENGTH_SHORT).show();
-                db.close();
             }
 
+            db.close();
         });
 
         pokeDetailFragment.setOnTeamButtonClickListener(pokemonTeam -> {
-            if (db.openReadable().getPokemonByID(pokemonTeam.getId()) == null || !db.openReadable().isTeam(pokemonTeam.getId())) {
+            db.openWritable();
+
+            if (db.getPokemonByID(pokemonTeam.getId()) == null || !db.isTeam(pokemonTeam.getId())) {
                 db.openWritable().insert(pokemonTeam, true);
+                updatePokemonListFragment();
                 Toast.makeText(this, "Pokemon ajouté !", Toast.LENGTH_SHORT).show();
-                db.close();
             }
             else {
                 db.openWritable().delete(pokemonTeam.getId(), true);
+                updatePokemonListFragment();
                 Toast.makeText(this, "Pokemon supprimé !", Toast.LENGTH_SHORT).show();
-                db.close();
             }
+            db.close();
         });
 
         // set On Item Click list fragment
         listOfPokemonFragment.setOnItemClickListener(pokemonID -> {
-            Pokemon pokemonFromDB = db.openReadable().getPokemonByID(pokemonID);
+
+            db.openReadable();
+
+            Pokemon pokemonFromDB = db.getPokemonByID(pokemonID);
             pokeDetailFragment.updatePokemon(pokemonFromDB);
             pokeDetailFragment.updateBooleanForDisplay(true, true, false);
             pokeDetailFragment.updateFavBoolean(db.isFav(pokemonFromDB.getId()));
-
             db.close();
+
             swapFragment(pokeDetailFragment);
         });
 
@@ -150,6 +161,15 @@ public class MainActivity extends AppCompatActivity {
         transaction.commit();
 
         fm.popBackStack();
+    }
+
+    private void updatePokemonListFragment() {
+        if (listOfPokemonFragment.isTeamList()) {
+            listOfPokemonFragment.updatePokemonList(db.getAllTeamPokemon());
+        }
+        else {
+            listOfPokemonFragment.updatePokemonList(db.getAllFavPokemon());
+        }
     }
 
 }
